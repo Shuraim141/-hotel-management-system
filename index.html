@@ -1,55 +1,182 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Hotel Management System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maison Aurel — Hotel Management</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <h1>Hotel Management System</h1>
+<div class="app">
 
-  <div class="container">
-    <h2>Book a Room</h2>
-
-    <label>Customer Name</label>
-    <input type="text" id="customerName">
-
-    <label>Phone Number</label>
-    <input type="text" id="phone">
-
-    <label>Room Type</label>
-    <select id="roomType">
-      <option value="">Select Room</option>
-      <option value="Single">Single - Rs 3000/day</option>
-      <option value="Double">Double - Rs 5000/day</option>
-      <option value="Deluxe">Deluxe - Rs 8000/day</option>
-    </select>
-
-    <label>Number of Days</label>
-    <input type="number" id="days">
-
-    <button onclick="bookRoom()">Book Room</button>
-
-    <h3 id="message"> </h3>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">
+      Shuraim Hotel
+      <span>Property Management</span>
+    </div>
+    <div class="nav-item active" onclick="showView('dashboard')">
+      <span class="nav-icon">⊞</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="showView('book')">
+      <span class="nav-icon">✦</span> New Booking
+    </div>
+    <div class="nav-item" onclick="showView('records')">
+      <span class="nav-icon">≡</span> Records
+      <span class="nav-badge" id="nav-count">0</span>
+    </div>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-revenue">
+      <div class="rev-label">Revenue Total</div>
+      <div class="rev-val" id="sidebar-revenue">Rs 0</div>
+    </div>
   </div>
 
-  <div class="container">
-    <h2>Booking Records</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Phone</th>
-          <th>Room</th>
-          <th>Days</th>
-          <th>Total Bill</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="bookingList"></tbody>
-    </table>
-  </div>
+  <!-- MAIN -->
+  <div class="main">
 
-  <script src="script.js"></script>
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title">Dashboard Overview</div>
+        <div class="topbar-sub" id="topbar-sub">Today's snapshot</div>
+      </div>
+      <div class="badge-live">Live</div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD VIEW -->
+      <div id="view-dashboard">
+        <div class="stats-row">
+          <div class="stat-card s1">
+            <div class="stat-label">Total Bookings</div>
+            <div class="stat-val" id="stat-total">0</div>
+            <div class="stat-sub"><span class="stat-dot single"></span>All time</div>
+          </div>
+          <div class="stat-card s2">
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-val" id="stat-rev">Rs 0</div>
+            <div class="stat-sub"><span class="stat-dot double"></span>Cumulative</div>
+          </div>
+          <div class="stat-card s3">
+            <div class="stat-label">Avg. Bill</div>
+            <div class="stat-val" id="stat-avg">Rs 0</div>
+            <div class="stat-sub"><span class="stat-dot deluxe"></span>Per booking</div>
+          </div>
+          <div class="stat-card s4">
+            <div class="stat-label">Top Room</div>
+            <div class="stat-val large" id="stat-top">—</div>
+            <div class="stat-sub"><span class="stat-dot green"></span>Most booked</div>
+          </div>
+        </div>
+
+        <div class="panels">
+          <div class="panel">
+            <div class="panel-title">
+              Room Occupancy
+              <span id="occ-pct">0 bookings</span>
+            </div>
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">Distribution by room type</div>
+            <div id="occ-chart"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">Recent Bookings <span>Latest 3</span></div>
+            <div id="recent-list">
+              <div class="empty-state">
+                <div class="empty-icon">🏨</div>
+                No bookings yet
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOOK VIEW -->
+      <div id="view-book" style="display:none">
+        <div class="panels">
+          <div class="panel">
+            <div class="panel-title">Guest Details</div>
+            <div class="form-group">
+              <label class="form-label">Guest Name</label>
+              <input class="form-input" id="cName" placeholder="Full name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input class="form-input" id="cPhone" placeholder="+92 300 0000000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Number of Nights</label>
+              <input class="form-input" id="cDays" type="number" min="1" placeholder="e.g. 3">
+            </div>
+
+            <div class="panel-title" style="margin-top:8px;margin-bottom:12px">Select Room Type</div>
+            <div class="room-picker">
+              <div class="room-opt single" id="opt-Single" onclick="selectRoom('Single')">
+                <div class="room-opt-icon">🛏</div>
+                <div class="room-opt-name">Single</div>
+                <div class="room-opt-price">Rs 3,000 / night</div>
+              </div>
+              <div class="room-opt double" id="opt-Double" onclick="selectRoom('Double')">
+                <div class="room-opt-icon">🛏🛏</div>
+                <div class="room-opt-name">Double</div>
+                <div class="room-opt-price">Rs 5,000 / night</div>
+              </div>
+              <div class="room-opt deluxe" id="opt-Deluxe" onclick="selectRoom('Deluxe')">
+                <div class="room-opt-icon">👑</div>
+                <div class="room-opt-name">Deluxe</div>
+                <div class="room-opt-price">Rs 8,000 / night</div>
+              </div>
+            </div>
+
+            <button class="btn-book" id="bookBtn" onclick="doBook()">Confirm Reservation</button>
+            <div id="msg" class="msg"></div>
+          </div>
+
+          <div class="panel receipt-panel">
+            <div class="panel-title">Live Receipt</div>
+            <div id="receipt-placeholder" class="receipt-placeholder">
+              Fill in guest details<br>to preview the receipt
+            </div>
+            <div class="receipt" id="receipt">
+              <div class="receipt-hotel">Maison Aurel</div>
+              <div class="receipt-sub">Hotel &amp; Suites — Karachi</div>
+              <hr class="receipt-divider">
+              <div class="receipt-row"><span>Guest</span><span id="r-name">—</span></div>
+              <div class="receipt-row"><span>Room Type</span><span id="r-room">—</span></div>
+              <div class="receipt-row"><span>Duration</span><span id="r-days">—</span></div>
+              <div class="receipt-row"><span>Rate / Night</span><span id="r-rate">—</span></div>
+              <hr class="receipt-divider">
+              <div class="receipt-row total"><span>Total Amount</span><span id="r-total">—</span></div>
+              <div class="receipt-id" id="r-id">REF: —</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECORDS VIEW -->
+      <div id="view-records" style="display:none">
+        <div class="panel">
+          <div class="records-header">
+            <div class="panel-title" style="margin-bottom:0">All Bookings</div>
+            <div class="filter-label" id="filter-label">Showing all</div>
+          </div>
+          <div class="tab-row">
+            <div class="tab active" onclick="filterRec('All', this)">All</div>
+            <div class="tab" onclick="filterRec('Single', this)">Single</div>
+            <div class="tab" onclick="filterRec('Double', this)">Double</div>
+            <div class="tab" onclick="filterRec('Deluxe', this)">Deluxe</div>
+          </div>
+          <div id="records-body"></div>
+        </div>
+      </div>
+
+    </div><!-- end content -->
+  </div><!-- end main -->
+</div><!-- end app -->
+
+<script src="script.js"></script>
 </body>
 </html>
