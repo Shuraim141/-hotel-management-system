@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hotel Management System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Hotel Management System</h1>
+
+  <div class="container">
+    <h2>Book a Room</h2>
+
+    <label>Customer Name</label>
+    <input type="text" id="customerName">
+
+    <label>Phone Number</label>
+    <input type="text" id="phone">
+
+    <label>Room Type</label>
+    <select id="roomType">
+      <option value="">Select Room</option>
+      <option value="Single">Single - Rs 3000/day</option>
+      <option value="Double">Double - Rs 5000/day</option>
+      <option value="Deluxe">Deluxe - Rs 8000/day</option>
+    </select>
+
+    <label>Number of Days</label>
+    <input type="number" id="days">
+
+    <button onclick="bookRoom()">Book Room</button>
+
+    <h3 id="message"> </h3>
+  </div>
+
+  <div class="container">
+    <h2>Booking Records</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Room</th>
+          <th>Days</th>
+          <th>Total Bill</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="bookingList"></tbody>
+    </table>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
