@@ -307,3 +307,74 @@ function escapeHtml(str) {
 
 updateDashboard();
 updateNav();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ============================================================
+// AUTHENTICATION (client-side demo only)
+// ============================================================
+
+const VALID_USERS = {
+  admin: 'admin123',
+  staff: 'staff123'
+};
+
+function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const msg  = document.getElementById('login-msg');
+
+  msg.className = 'msg';
+
+  if (!user || !pass) {
+    msg.className = 'msg error';
+    msg.textContent = 'Please enter both username and password.';
+    return;
+  }
+
+  if (VALID_USERS[user] && VALID_USERS[user] === pass) {
+    sessionStorage.setItem('mau_auth', user);
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = '';
+  } else {
+    msg.className = 'msg error';
+    msg.textContent = 'Invalid username or password.';
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem('mau_auth');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('login-msg').className = 'msg';
+}
+
+function checkAuth() {
+  const auth = sessionStorage.getItem('mau_auth');
+  if (auth && VALID_USERS[auth]) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = '';
+  } else {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
+}
+
+document.getElementById('loginPass').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') doLogin();
+});
+
+checkAuth();
